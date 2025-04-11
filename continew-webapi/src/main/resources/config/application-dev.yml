@@ -61,6 +61,8 @@ spring.data:
   redisson:
     enabled: true
     mode: SINGLE
+    single-server-config:
+      password: ${REDIS_PWD:123456}
 ## JetCache 配置
 jetcache:
   # 统计间隔（默认 0，表示不统计）

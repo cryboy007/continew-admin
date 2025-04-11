@@ -1,6 +1,6 @@
 FROM openjdk:17
 
-MAINTAINER Charles7c charles7c@126.com
+MAINTAINER hetao study.hetao@foxmail.com
 
 ARG JAR_FILE=*.jar
 COPY ${JAR_FILE} /app/bin/app.jar

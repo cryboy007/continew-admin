@@ -1,9 +1,9 @@
 --- ### 项目配置
 project:
   # 名称
-  name: ContiNew Admin
+  name: 企业中台
   # 应用名称
-  app-name: continew-admin
+  app-name: data-admin
   # 版本
   version: 3.5.0
   # 描述
@@ -12,13 +12,9 @@ project:
   base-package: top.continew.admin
   ## 作者信息配置
   contact:
-    name: Charles7c
-    email: charles7c@126.com
-    url: https://blog.charles7c.top/about/me
-  ## 许可协议信息配置
-  license:
-    name: Apache-2.0
-    url: https://github.com/continew-org/continew-admin/blob/dev/LICENSE
+    name: he.tao
+    email: study.hetao@foxmail.com
+    url: https://halo.znsd.top
 
 --- ### 日志配置
 continew-starter.log:
