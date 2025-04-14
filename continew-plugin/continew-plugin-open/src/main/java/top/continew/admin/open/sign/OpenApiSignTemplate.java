@@ -16,6 +16,7 @@
 
 package top.continew.admin.open.sign;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.sign.SaSignTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -54,7 +55,7 @@ public class OpenApiSignTemplate extends SaSignTemplate {
         ValidationUtils.throwIfBlank(signValue, "sign不能为空");
         ValidationUtils.throwIfBlank(accessKeyValue, "accessKey不能为空");
         AppDO app = appService.getByAccessKey(accessKeyValue);
-        ValidationUtils.throwIfNull(app, "accessKey非法");
+        ValidationUtils.throwIfNull(app, "accessKey无效");
         ValidationUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, app.getStatus(), "应用已被禁用, 请联系管理员");
         ValidationUtils.throwIf(app.isExpired(), "应用已过期, 请联系管理员");
 
@@ -71,6 +72,6 @@ public class OpenApiSignTemplate extends SaSignTemplate {
         // 移除 sign 参数
         paramMap.remove(sign);
         // 计算签名
-        return super.abstractStr(super.joinParamsDictSort(paramMap));
+        return SaSecureUtil.md5(super.joinParamsDictSort(paramMap));
     }
 }

@@ -29,8 +29,8 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.common.constant.RegexConstants;
+import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.model.query.UserQuery;
 import top.continew.admin.system.model.req.user.UserImportReq;
@@ -46,7 +46,7 @@ import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
-import top.continew.starter.extension.crud.model.resp.BaseIdResp;
+import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
 import java.io.IOException;
@@ -61,19 +61,19 @@ import java.io.IOException;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/system/user", api = {Api.PAGE, Api.LIST, Api.DETAIL, Api.ADD, Api.UPDATE, Api.DELETE,
+@CrudRequestMapping(value = "/system/user", api = {Api.PAGE, Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE,
     Api.EXPORT})
 public class UserController extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
 
     @Override
     @Operation(summary = "新增数据", description = "新增数据")
-    public BaseIdResp<Long> add(@Validated(CrudValidationGroup.Add.class) @RequestBody UserReq req) {
+    public IdResp<Long> create(@Validated(CrudValidationGroup.Create.class) @RequestBody UserReq req) {
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getPassword()));
         ValidationUtils.throwIfNull(rawPassword, "密码解密失败");
         ValidationUtils.throwIf(!ReUtil
             .isMatch(RegexConstants.PASSWORD, rawPassword), "密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字");
         req.setPassword(rawPassword);
-        return super.add(req);
+        return super.create(req);
     }
 
     @Operation(summary = "下载导入模板", description = "下载导入模板")

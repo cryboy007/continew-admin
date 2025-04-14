@@ -277,22 +277,30 @@ CREATE TABLE IF NOT EXISTS `sys_storage` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储表';
 
 CREATE TABLE IF NOT EXISTS `sys_file` (
-    `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
-    `name`           varchar(255) NOT NULL                    COMMENT '名称',
-    `size`           bigint(20)   NOT NULL                    COMMENT '大小（字节）',
-    `url`            varchar(512) NOT NULL                    COMMENT 'URL',
-    `extension`      varchar(100) DEFAULT NULL                COMMENT '扩展名',
-    `thumbnail_size` bigint(20)   DEFAULT NULL                COMMENT '缩略图大小（字节)',
-    `thumbnail_url`  varchar(512) DEFAULT NULL                COMMENT '缩略图URL',
-    `type`           tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：其他；2：图片；3：文档；4：视频；5：音频）',
-    `storage_id`     bigint(20)   NOT NULL                    COMMENT '存储ID',
-    `create_user`    bigint(20)   NOT NULL                    COMMENT '创建人',
-    `create_time`    datetime     NOT NULL                    COMMENT '创建时间',
-    `update_user`    bigint(20)   NOT NULL                    COMMENT '修改人',
-    `update_time`    datetime     NOT NULL                    COMMENT '修改时间',
+    `id`                 bigint(20)    NOT NULL AUTO_INCREMENT     COMMENT 'ID',
+    `name`               varchar(255)  NOT NULL                    COMMENT '名称',
+    `size`               bigint(20)    NOT NULL                    COMMENT '大小（字节）',
+    `url`                varchar(512)  NOT NULL                    COMMENT 'URL',
+    `parent_path`        varchar(512)  DEFAULT '/'                 COMMENT '上级目录',
+    `abs_path`           varchar(1024) NOT NULL                    COMMENT '绝对路径',
+    `extension`          varchar(100)  DEFAULT NULL                COMMENT '扩展名',
+    `content_type`       varchar(64)   NOT NULL                    COMMENT '内容类型',
+    `type`               tinyint(1)    UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（0: 目录；1：其他；2：图片；3：文档；4：视频；5：音频）',
+    `md5`                varchar(128)  NOT NULL                    COMMENT 'MD5值',
+    `metadata`           text          DEFAULT NULL                COMMENT '元数据',
+    `thumbnail_size`     bigint(20)    DEFAULT NULL                COMMENT '缩略图大小（字节)',
+    `thumbnail_url`      varchar(512)  DEFAULT NULL                COMMENT '缩略图URL',
+    `thumbnail_metadata` text          DEFAULT NULL                COMMENT '缩略图元数据',
+    `storage_id`         bigint(20)    NOT NULL                    COMMENT '存储ID',
+    `create_user`        bigint(20)    NOT NULL                    COMMENT '创建人',
+    `create_time`        datetime      NOT NULL                    COMMENT '创建时间',
+    `update_user`        bigint(20)    NOT NULL                    COMMENT '修改人',
+    `update_time`        datetime      NOT NULL                    COMMENT '修改时间',
     PRIMARY KEY (`id`),
     INDEX `idx_url`(`url`),
+    INDEX `idx_md5`(`md5`),
     INDEX `idx_type`(`type`),
+    INDEX `idx_storage_id`(`storage_id`),
     INDEX `idx_create_user`(`create_user`),
     INDEX `idx_update_user`(`update_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文件表';
@@ -300,10 +308,8 @@ CREATE TABLE IF NOT EXISTS `sys_file` (
 CREATE TABLE IF NOT EXISTS `sys_client` (
     `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `client_id`      varchar(50)  NOT NULL                    COMMENT '终端ID',
-    `client_key`     varchar(255) NOT NULL                    COMMENT '终端Key',
-    `client_secret`  varchar(255) NOT NULL                    COMMENT '终端秘钥',
-    `auth_type`      json         NOT NULL                    COMMENT '认证类型',
     `client_type`    varchar(50)  NOT NULL                    COMMENT '终端类型',
+    `auth_type`      json         NOT NULL                    COMMENT '认证类型',
     `active_timeout` bigint(20)   DEFAULT -1                  COMMENT 'Token最低活跃频率（单位：秒，-1：不限制，永不冻结）',
     `timeout`        bigint(20)   DEFAULT 2592000             COMMENT 'Token有效期（单位：秒，-1：永不过期）',
     `status`         tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
@@ -312,5 +318,44 @@ CREATE TABLE IF NOT EXISTS `sys_client` (
     `update_user`    bigint(20)   DEFAULT NULL                COMMENT '修改人',
     `update_time`    datetime     DEFAULT NULL                COMMENT '修改时间',
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `uk_client_id`(`client_id`)
+    UNIQUE INDEX `uk_client_id`(`client_id`),
+    INDEX `idx_create_user`(`create_user`),
+    INDEX `idx_update_user`(`update_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='终端表';
+
+CREATE TABLE IF NOT EXISTS `sys_sms_config`  (
+    `id`              bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
+    `name`            varchar(100) NOT NULL                    COMMENT '名称',
+    `supplier`        varchar(50)  NOT NULL                    COMMENT '厂商',
+    `access_key`      varchar(255) NOT NULL                    COMMENT 'Access Key',
+    `secret_key`      varchar(255) NOT NULL                    COMMENT 'Secret Key',
+    `signature`       varchar(100) DEFAULT NULL                COMMENT '短信签名',
+    `template_id`     varchar(50)  DEFAULT NULL                COMMENT '模板ID',
+    `weight`          int          DEFAULT NULL                COMMENT '负载均衡权重',
+    `retry_interval`  int          DEFAULT NULL                COMMENT '重试间隔（单位：秒）',
+    `max_retries`     int          DEFAULT NULL                COMMENT '重试次数',
+    `maximum`         int          DEFAULT NULL                COMMENT '发送上限',
+    `supplier_config` text         DEFAULT NULL                COMMENT '各个厂商独立配置',
+    `status`          tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
+    `create_user`     bigint(20)   NOT NULL                    COMMENT '创建人',
+    `create_time`     datetime     NOT NULL                    COMMENT '创建时间',
+    `update_user`     bigint(20)   DEFAULT NULL                COMMENT '修改人',
+    `update_time`     datetime     DEFAULT NULL                COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    INDEX `idx_create_user`(`create_user`),
+    INDEX `idx_update_user`(`update_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信配置表';
+
+CREATE TABLE IF NOT EXISTS `sys_sms_log`  (
+    `id`          bigint(20)  NOT NULL AUTO_INCREMENT     COMMENT 'ID',
+    `config_id`   bigint(20)  NOT NULL                    COMMENT '配置ID',
+    `phone`       varchar(25) NOT NULL                    COMMENT '手机号',
+    `params`      text        DEFAULT NULL                COMMENT '参数配置',
+    `status`      tinyint(1)  UNSIGNED NOT NULL DEFAULT 1 COMMENT '发送状态（1：成功；2：失败）',
+    `res_msg`     text        DEFAULT NULL                COMMENT '返回数据',
+    `create_user` bigint(20)  NOT NULL                    COMMENT '创建人',
+    `create_time` datetime    NOT NULL                    COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    INDEX `idx_config_id`(`config_id`),
+    INDEX `idx_create_user`(`create_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信日志表';

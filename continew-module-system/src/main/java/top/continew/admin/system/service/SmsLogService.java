@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.mapper;
+package top.continew.admin.system.service;
 
-import org.apache.ibatis.annotations.Param;
-import top.continew.admin.system.model.entity.UserSocialDO;
-import top.continew.starter.data.mp.base.BaseMapper;
+import top.continew.admin.system.model.query.SmsLogQuery;
+import top.continew.admin.system.model.req.SmsLogReq;
+import top.continew.admin.system.model.resp.SmsLogResp;
+import top.continew.starter.extension.crud.service.BaseService;
 
 /**
- * 用户社会化关联 Mapper
+ * 短信日志业务接口
  *
- * @author Charles7c
- * @since 2023/10/11 22:10
+ * @author luoqiz
+ * @since 2025/03/15 22:15
  */
-public interface UserSocialMapper extends BaseMapper<UserSocialDO> {
-
-    /**
-     * 根据来源和开放 ID 查询
-     *
-     * @param source 来源
-     * @param openId 开放 ID
-     * @return 用户社会化关联信息
-     */
-    UserSocialDO selectBySourceAndOpenId(@Param("source") String source, @Param("openId") String openId);
-}
+public interface SmsLogService extends BaseService<SmsLogResp, SmsLogResp, SmsLogQuery, SmsLogReq> {}

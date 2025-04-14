@@ -14,54 +14,51 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.entity;
+package top.continew.admin.system.model.resp.file;
 
-import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
- * 用户历史密码实体
+ * 文件上传响应信息
  *
  * @author Charles7c
- * @since 2024/5/16 21:58
+ * @since 2024/3/6 22:26
  */
 @Data
-@NoArgsConstructor
-@TableName("sys_user_password_history")
-public class UserPasswordHistoryDO implements Serializable {
+@Builder
+@Schema(description = "文件上传响应信息")
+public class FileUploadResp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
+     * 文件 id
      */
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
+    @Schema(description = "文件 id", example = "1897293810343682049")
+    private String id;
 
     /**
-     * 用户 ID
+     * 文件 URL
      */
-    private Long userId;
+    @Schema(description = "文件 URL", example = "http://localhost:8000/file/65e87dc3fb377a6fb58bdece.jpg")
+    private String url;
 
     /**
-     * 密码
+     * 缩略图文件 URL
      */
-    private String password;
+    @Schema(description = "缩略图文件 URL", example = "http://localhost:8000/file/65e87dc3fb377a6fb58bdece.jpg")
+    private String thUrl;
 
     /**
-     * 创建时间
+     * 元数据
      */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-
-    public UserPasswordHistoryDO(Long userId, String password) {
-        this.userId = userId;
-        this.password = password;
-    }
+    @Schema(description = "元数据")
+    private Map<String, String> metadata;
 }

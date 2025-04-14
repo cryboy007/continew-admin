@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.resp;
+package top.continew.admin.system.model.resp.file;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,16 +57,46 @@ public class FileResp extends BaseDetailResp {
     private String url;
 
     /**
+     * 上级目录
+     */
+    @Schema(description = "上级目录", example = "25")
+    private String parentPath;
+
+    /**
+     * 绝对路径
+     */
+    @Schema(description = "绝对路径", example = "/2025/2/25")
+    private String absPath;
+
+    /**
      * 扩展名
      */
     @Schema(description = "扩展名", example = "jpg")
     private String extension;
 
     /**
+     * 内容类型
+     */
+    @Schema(description = "内容类型", example = "image/jpeg")
+    private String contentType;
+
+    /**
      * 类型
      */
     @Schema(description = "类型", example = "2")
     private FileTypeEnum type;
+
+    /**
+     * MD5 值
+     */
+    @Schema(description = "MD5值", example = "193572f83684128a0d0f993e97100f8a")
+    private String md5;
+
+    /**
+     * 元数据
+     */
+    @Schema(description = "元数据", example = "{width:1024,height:1024}")
+    private String metadata;
 
     /**
      * 缩略图大小（字节)
@@ -79,6 +109,12 @@ public class FileResp extends BaseDetailResp {
      */
     @Schema(description = "缩略图 URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/example/example.jpg.min.jpg")
     private String thumbnailUrl;
+
+    /**
+     * 缩略图元数据
+     */
+    @Schema(description = "缩略图文件元数据", example = "{width:100,height:100}")
+    private String thumbnailMetadata;
 
     /**
      * 存储 ID

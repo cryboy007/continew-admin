@@ -14,52 +14,54 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.resp;
+package top.continew.admin.system.model.entity.user;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-import top.continew.admin.system.enums.FileTypeEnum;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
- * 文件资源统计信息
+ * 用户历史密码实体
  *
- * @author Kils
- * @since 2024/4/30 14:30
+ * @author Charles7c
+ * @since 2024/5/16 21:58
  */
 @Data
-@Schema(description = "文件资源统计信息")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class FileStatisticsResp implements Serializable {
+@NoArgsConstructor
+@TableName("sys_user_password_history")
+public class UserPasswordHistoryDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 文件类型
+     * ID
      */
-    @Schema(description = "类型", example = "2")
-    private FileTypeEnum type;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
-     * 大小（字节）
+     * 用户 ID
      */
-    @Schema(description = "大小（字节）", example = "4096")
-    private Long size;
+    private Long userId;
 
     /**
-     * 数量
+     * 密码
      */
-    @Schema(description = "数量", example = "1000")
-    private Long number;
+    private String password;
 
     /**
-     * 分类数据
+     * 创建时间
      */
-    @Schema(description = "分类数据")
-    private List<FileStatisticsResp> data;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    public UserPasswordHistoryDO(Long userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
 }

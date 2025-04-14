@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.resp;
+package top.continew.admin.common.config.excel;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Data;
-
-import java.io.Serial;
-import java.io.Serializable;
+import java.lang.annotation.*;
 
 /**
- * 文件上传响应信息
+ * 字典字段注解
  *
  * @author Charles7c
- * @since 2024/3/6 22:26
+ * @since 2025/4/9 20:25
  */
-@Data
-@Builder
-@Schema(description = "文件上传响应信息")
-public class FileUploadResp implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+public @interface DictExcelProperty {
 
     /**
-     * 文件 URL
+     * 字典编码
+     *
+     * @return 字典编码
      */
-    @Schema(description = "文件 URL", example = "http://localhost:8000/file/65e87dc3fb377a6fb58bdece.jpg")
-    private String url;
+    String value();
 }
