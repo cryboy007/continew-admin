@@ -24,13 +24,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 各类型未读消息信息
+ * 各类型未读消息响应参数
  *
  * @author Charles7c
  * @since 2023/11/2 23:00
  */
 @Data
-@Schema(description = "各类型未读消息信息")
+@Schema(description = "各类型未读消息响应参数")
 public class MessageTypeUnreadResp implements Serializable {
 
     @Serial
@@ -39,7 +39,7 @@ public class MessageTypeUnreadResp implements Serializable {
     /**
      * 类型
      */
-    @Schema(description = "类型（1：系统消息）", example = "1")
+    @Schema(description = "类型", example = "1")
     private MessageTypeEnum type;
 
     /**

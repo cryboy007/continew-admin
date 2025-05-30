@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.controller.schedule;
+package top.continew.admin.job;
 
 import cn.hutool.core.util.StrUtil;
 import com.aizuda.snailjob.client.job.core.annotation.JobExecutor;
@@ -53,8 +53,9 @@ public class DemoEnvironmentJob {
     private final DictMapper dictMapper;
     private final StorageMapper storageMapper;
     private final NoticeMapper noticeMapper;
+    private final NoticeLogMapper noticeLogMapper;
     private final MessageMapper messageMapper;
-    private final MessageUserMapper messageUserMapper;
+    private final MessageLogMapper messageLogMapper;
     private final UserMapper userMapper;
     private final UserRoleMapper userRoleMapper;
     private final UserSocialMapper userSocialMapper;
@@ -105,11 +106,12 @@ public class DemoEnvironmentJob {
             Long appCount = appMapper.lambdaQuery().gt(AppDO::getId, DELETE_FLAG).count();
             this.log(appCount, "应用");
             Long clientCount = clientsMapper.lambdaQuery().gt(ClientDO::getId, DELETE_FLAG).count();
-            this.log(clientCount, "终端");
+            this.log(clientCount, "客户端");
             InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().blockAttack(true).build());
             SnailJobLog.REMOTE.info("演示环境待清理数据项检测完成，开始执行清理。");
             // 清理关联数据
-            messageUserMapper.lambdaUpdate().gt(MessageUserDO::getMessageId, MESSAGE_FLAG).remove();
+            noticeLogMapper.lambdaUpdate().gt(NoticeLogDO::getNoticeId, DELETE_FLAG).remove();
+            messageLogMapper.lambdaUpdate().gt(MessageLogDO::getMessageId, MESSAGE_FLAG).remove();
             userRoleMapper.lambdaUpdate().notIn(UserRoleDO::getRoleId, ROLE_FLAG).remove();
             userRoleMapper.lambdaUpdate().notIn(UserRoleDO::getUserId, USER_FLAG).remove();
             roleDeptMapper.lambdaUpdate().notIn(RoleDeptDO::getRoleId, ROLE_FLAG).remove();
@@ -138,7 +140,7 @@ public class DemoEnvironmentJob {
                 .remove());
             this.clean(deptCount, "部门", null, () -> deptMapper.lambdaUpdate().gt(DeptDO::getId, DEPT_FLAG).remove());
             this.clean(appCount, "应用", null, () -> appMapper.lambdaUpdate().gt(AppDO::getId, DEPT_FLAG).remove());
-            this.clean(clientCount, "终端", null, () -> clientsMapper.lambdaUpdate()
+            this.clean(clientCount, "客户端", null, () -> clientsMapper.lambdaUpdate()
                 .gt(ClientDO::getId, DEPT_FLAG)
                 .remove());
             SnailJobLog.REMOTE.info("演示环境数据已清理完成。");
